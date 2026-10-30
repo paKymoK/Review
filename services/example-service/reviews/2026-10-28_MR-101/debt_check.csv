@@ -1,0 +1,4 @@
+debt_id,issue,previous_status,result,new_status,evidence
+TD-example-service-001,N+1 query khi load danh sách đơn hàng,Open,Còn nguyên,Open,"MR-101: OrderService.java được chạm, vòng lặp ở dòng 88 vẫn còn"
+TD-example-service-002,GET /orders/{id} không kiểm tra chủ sở hữu đơn (IDOR),Open,Đã sửa,Fixed (verified),MR-101: OrderController.java:44 gọi orderAccessPolicy.assertOwner
+TD-example-service-004,Gọi API cổng thanh toán bên trong @Transactional,Open,Sửa một phần,Partially fixed,MR-101: thêm timeout 3s (PaymentClient.java:20) nhưng lời gọi vẫn trong @Transactional (PaymentService.java:57)

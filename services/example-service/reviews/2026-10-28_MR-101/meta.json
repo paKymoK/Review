@@ -1,0 +1,9 @@
+{
+  "service": "example-service",
+  "mr": "MR-101",
+  "date": "2026-10-28",
+  "reviewer": "Owner + Claude",
+  "risk_tier": "High",
+  "verdict": "Merge sau khi sửa các mục",
+  "verdict_reason": "Có 1 BLOCKER và 1 MAJOR trong code mới (mục 1.1 và 2.1) cần sửa trước khi merge."
+}
