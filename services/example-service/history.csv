@@ -1,10 +1,13 @@
-date,mr,debt_id,old_status,new_status,evidence
-2026-07-15,MR-80,TD-example-service-001,,Open,Ghi nhận lần đầu
-2026-08-02,MR-85,TD-example-service-002,,Open,Ghi nhận lần đầu
-2026-08-20,MR-90,TD-example-service-003,,Open,Ghi nhận lần đầu
-2026-09-01,MR-92,TD-example-service-004,,Open,Ghi nhận lần đầu; hoãn đến S26 (go-live sprint 24)
-2026-09-10,MR-95,TD-example-service-005,,Open,Ghi nhận lần đầu
-2026-10-05,MR-99,TD-example-service-005,Open,Won't fix,Quản lý quyết định: module sẽ được thay thế trong Q1/2027
-2026-10-28,MR-101,TD-example-service-002,Open,Fixed (verified),OrderController.java:44 đã gọi orderAccessPolicy.assertOwner
-2026-10-28,MR-101,TD-example-service-004,Open,Partially fixed,Đã thêm timeout 3s nhưng lời gọi vẫn trong @Transactional (PaymentService.java:57)
-2026-10-28,MR-101,TD-example-service-006,,Open,Ghi nhận lần đầu
+date,mr,problem_id,old_status,new_status,evidence
+2026-07-15,MR-80,P-example-service-001,,Open,Ghi nhận lần đầu
+2026-08-02,MR-85,P-example-service-002,,Open,Ghi nhận lần đầu
+2026-08-20,MR-90,P-example-service-003,,Open,Ghi nhận lần đầu
+2026-09-01,MR-92,P-example-service-004,,Open,Ghi nhận lần đầu; hoãn đến S26 (go-live sprint 24)
+2026-09-10,MR-95,P-example-service-005,,Open,Ghi nhận lần đầu
+2026-10-05,MR-99,P-example-service-005,Open,Won't fix,Quản lý quyết định: module sẽ được thay thế trong Q1/2027
+2026-10-28,MR-101,P-example-service-002,Open,Fixed (verified),OrderController.java:44 đã gọi orderAccessPolicy.assertOwner
+2026-10-28,MR-101,P-example-service-004,Open,Partially fixed,Đã thêm timeout 3s nhưng lời gọi vẫn trong @Transactional (PaymentService.java:57)
+2026-10-28,MR-101,P-example-service-006,,Open,Ghi nhận lần đầu
+2026-10-28,MR-101,P-example-service-007,,Open,Ghi nhận lần đầu (Fix now)
+2026-10-28,MR-101,P-example-service-008,,Open,Ghi nhận lần đầu (Fix now)
+2026-10-28,MR-101,P-example-service-009,,Open,Ghi nhận lần đầu (Fix now)

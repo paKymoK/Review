@@ -38,17 +38,17 @@
 
 ## 5. Chất lượng code FE
 
-## Kiểm tra nợ cũ
+## Kiểm tra vấn đề cũ
 
-| Mã nợ | Vấn đề | Trạng thái trước | Kết quả trong MR này | Trạng thái mới | Bằng chứng |
+| Mã vấn đề | Vấn đề | Trạng thái trước | Kết quả trong MR này | Trạng thái mới | Bằng chứng |
 |---|---|---|---|---|---|
-| TD-<service>-001 | <tiêu đề> | Open | Đã sửa / Sửa một phần / Còn nguyên / Không chạm | Fixed (verified) | MR-<id>, `File.java:10` |
+| P-<service>-001 | <tiêu đề> | Open | Đã sửa / Sửa một phần / Còn nguyên / Không chạm | Fixed (verified) | MR-<id>, `File.java:10` |
 
-## Nợ trong các file MR này chạm vào
+## Vấn đề tồn tại trong các file MR này chạm vào
 
 Gợi ý cho dev, không bắt buộc. Có thể sửa cùng lúc nếu thuận tiện.
 
-- `TD-<service>-002` — <tiêu đề> — `File.java:88`
+- `P-<service>-002` — <tiêu đề> — `File.java:88`
 
 ## Nợ kỹ thuật mới ghi nhận
 

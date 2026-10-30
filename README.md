@@ -1,17 +1,17 @@
 # Code Review Workspace
 
-Claude Code reviews merge requests for ~20 Java Spring Boot / ReactJS services and keeps a per-service technical-debt register. Everything is plain files in Git, so it can be reviewed from anywhere that can open the repo.
+Claude Code reviews merge requests for ~20 Java Spring Boot / ReactJS services and keeps a per-service problem register (`problem.xlsx`) that tracks every finding: fix-now items from new code and technical debt. Everything is plain files in Git, so it can be reviewed from anywhere that can open the repo.
 
 Claude reads `CLAUDE.md` automatically when started in this folder.
 
 ## Daily use
 
-1. **Draft:** `/review-mr <service> <MR id> <diff source>` → Claude writes `services/<service>/reviews/<date>_MR-<id>/review.md` (Vietnamese). It also re-checks old debt against the diff.
+1. **Draft:** `/review-mr <service> <MR id> <diff source>` → Claude writes `services/<service>/reviews/<date>_MR-<id>/review.md` (Vietnamese). It also re-checks old open problems (fix-now and debt) against the diff.
 2. **Owner edits:** open `review.md` anywhere (Git UI, IDE, phone), delete items that need no action, mark deferrals. Removed items are not logged.
-3. **Finalize:** `/finalize-review <service> <review-dir>` → Claude syncs the CSVs, updates the debt register, and regenerates the Excel files.
-4. **Commit** the result. Managers read `techdebt.xlsx` (Summary and Backlog sheets). Developers only read `review.md`.
+3. **Finalize:** `/finalize-review <service> <review-dir>` → Claude syncs the CSVs, adds every finding to the problem register, and regenerates the Excel files.
+4. **Commit** the result. Managers read `problem.xlsx` (Summary and Backlog sheets). Developers only read `review.md`.
 
-Other commands: `/new-service` (add a service), `/debt-sweep` (refresh old debt from current files).
+Other commands: `/new-service` (add a service), `/problem-sweep` (refresh open problems from current files).
 
 ## Setup
 

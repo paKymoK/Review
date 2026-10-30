@@ -2,7 +2,7 @@
 """Export the CSV/JSON source of truth to Excel.
 
 Usage:
-  python scripts/export_excel.py services/<service>                      -> techdebt.xlsx
+  python scripts/export_excel.py services/<service>                      -> problem.xlsx
   python scripts/export_excel.py services/<service>/reviews/<review-dir> -> tracker.xlsx
   python scripts/export_excel.py --all                                   -> everything under services/
 
@@ -29,7 +29,6 @@ MAX_ROW = 2000  # formula ranges cover rows 2..MAX_ROW
 STATUSES = ["Open", "Partially fixed", "Fixed (verified)", "Obsolete", "Won't fix"]
 OPEN_STATUSES = ["Open", "Partially fixed"]
 SEVERITIES = ["BLOCKER", "MAJOR", "MINOR", "QUESTION"]
-DEBT_CLASSES = ["Debt-Track", "Debt-Opportunistic"]
 TRACKER_CLASSES = ["Fix now", "Debt-Track", "Debt-Opportunistic"]
 ORIGINS = ["New", "Existing-touched", "Existing-untouched"]
 
@@ -187,12 +186,13 @@ def rng(sheet, letter):
     return f"{sheet}!${letter}$2:${letter}${MAX_ROW}"
 
 
-# ---------- register (techdebt.xlsx) ----------
+# ---------- register (problem.xlsx) ----------
 
 REGISTER_COLS = [
     {"key": "id", "header": "ID", "width": 18},
     {"key": "severity", "header": "Mức độ", "width": 12},
     {"key": "category", "header": "Nhóm rủi ro", "width": 15},
+    {"key": "origin", "header": "Nguồn gốc", "width": 19},
     {"key": "class", "header": "Phân loại", "width": 19},
     {"key": "issue", "header": "Vấn đề", "width": 42},
     {"key": "location", "header": "File / vị trí", "width": 38},
@@ -215,13 +215,13 @@ REGISTER_COLS = [
     {"key": "evidence", "header": "Bằng chứng", "width": 50},
 ]
 
-BACKLOG_KEYS = ["id", "severity", "class", "issue", "location", "first_seen", "age",
+BACKLOG_KEYS = ["id", "severity", "origin", "class", "issue", "location", "first_seen", "age",
                 "times_seen", "touched_not_fixed", "last_checked", "status", "evidence"]
 
 HISTORY_COLS = [
     {"key": "date", "header": "Ngày", "width": 13, "kind": "date"},
     {"key": "mr", "header": "MR / nguồn", "width": 18},
-    {"key": "debt_id", "header": "Mã nợ", "width": 18},
+    {"key": "problem_id", "header": "Mã vấn đề", "width": 18},
     {"key": "old_status", "header": "Trạng thái cũ", "width": 18},
     {"key": "new_status", "header": "Trạng thái mới", "width": 18},
     {"key": "evidence", "header": "Bằng chứng", "width": 70},
@@ -234,7 +234,7 @@ def age_formula(r, L):
 
 
 def build_register(svc_dir: Path):
-    rows = read_csv(svc_dir / "techdebt.csv")
+    rows = read_csv(svc_dir / "problem.csv")
     history = read_csv(svc_dir / "history.csv")
     profile = read_profile(svc_dir / "service-profile.md")
     thr_raw = profile.get("stale_after_days", "")
@@ -278,8 +278,8 @@ def build_register(svc_dir: Path):
     ws_sum.column_dimensions["A"].width = 44
     for col in "BCDEFG":
         ws_sum.column_dimensions[col].width = 16
-    put(ws_sum, "A1", f"Tổng hợp nợ kỹ thuật – {service}", font=TITLE_FONT, border=False)
-    put(ws_sum, "A2", "File xuất tự động từ techdebt.csv. Không sửa tay; thay đổi qua Git / Claude.",
+    put(ws_sum, "A1", f"Tổng hợp vấn đề – {service}", font=TITLE_FONT, border=False)
+    put(ws_sum, "A2", "File xuất tự động từ problem.csv. Không sửa tay; thay đổi qua Git / Claude.",
         font=Font(name=FONT, size=9, italic=True), border=False)
     put(ws_sum, "A3", "Ngưỡng tồn đọng (ngày) – lấy từ service-profile.md", font=BOLD_FONT)
     put(ws_sum, "B3", thr if thr is not None else "Không đặt")
@@ -301,15 +301,15 @@ def build_register(svc_dir: Path):
 
     r0 = tot + 2
     header_row(ws_sum, r0, ["Phân loại"] + STATUSES + ["Tổng"], fill=SUB_FILL)
-    for i, cl in enumerate(DEBT_CLASSES, r0 + 1):
+    for i, cl in enumerate(TRACKER_CLASSES, r0 + 1):
         put(ws_sum, f"A{i}", cl, font=BOLD_FONT)
         for j, _ in enumerate(STATUSES):
             col = get_column_letter(2 + j)
             put(ws_sum, f"{col}{i}", f'=COUNTIFS({class_rng},$A{i},{status_rng},{col}${r0})')
         put(ws_sum, f"G{i}", f"=SUM(B{i}:F{i})", font=BOLD_FONT)
 
-    m0 = r0 + len(DEBT_CLASSES) + 2
-    header_row(ws_sum, m0, ["Chỉ số nợ còn mở", "Giá trị"], fill=SUB_FILL)
+    m0 = r0 + len(TRACKER_CLASSES) + 2
+    header_row(ws_sum, m0, ["Chỉ số vấn đề còn mở", "Giá trị"], fill=SUB_FILL)
     open_cnt = "+".join(f'COUNTIF({status_rng},"{s}")' for s in OPEN_STATUSES)
     tnf_sum = "+".join(f'SUMIFS({tnf_rng},{status_rng},"{s}")' for s in OPEN_STATUSES)
     oldest = ",".join(f'_xlfn.MAXIFS({age_rng},{status_rng},"{s}")' for s in OPEN_STATUSES)
@@ -326,7 +326,7 @@ def build_register(svc_dir: Path):
     ws_sum.freeze_panes = "A5"
 
     wb.calculation.fullCalcOnLoad = True
-    out = svc_dir / "techdebt.xlsx"
+    out = svc_dir / "problem.xlsx"
     wb.save(out)
     return out
 
@@ -343,12 +343,12 @@ FINDING_COLS = [
     {"key": "description", "header": "Mô tả", "width": 60},
     {"key": "suggested_fix", "header": "Đề xuất sửa", "width": 52},
     {"key": "class", "header": "Phân loại", "width": 19},
-    {"key": "debt_id", "header": "Mã nợ", "width": 18},
+    {"key": "problem_id", "header": "Mã vấn đề", "width": 18},
     {"key": "note", "header": "Ghi chú của reviewer", "width": 40},
 ]
 
 DEBTCHECK_COLS = [
-    {"key": "debt_id", "header": "Mã nợ", "width": 18},
+    {"key": "problem_id", "header": "Mã vấn đề", "width": 18},
     {"key": "issue", "header": "Vấn đề", "width": 46},
     {"key": "previous_status", "header": "Trạng thái trước", "width": 18},
     {"key": "result", "header": "Kết quả trong MR này", "width": 26},
@@ -359,7 +359,7 @@ DEBTCHECK_COLS = [
 
 def build_tracker(review_dir: Path):
     findings = read_csv(review_dir / "findings.csv")
-    checks = read_csv(review_dir / "debt_check.csv")
+    checks = read_csv(review_dir / "problem_check.csv")
     meta_path = review_dir / "meta.json"
     meta = json.loads(meta_path.read_text(encoding="utf-8")) if meta_path.exists() else {}
 
@@ -367,7 +367,7 @@ def build_tracker(review_dir: Path):
     ws_sum = wb.active
     ws_sum.title = "Summary"
     ws_f = wb.create_sheet("Findings")
-    ws_c = wb.create_sheet("DebtCheck")
+    ws_c = wb.create_sheet("ProblemCheck")
 
     L = write_table(ws_f, FINDING_COLS, findings)
     add_color_rules(ws_f, L["severity"], SEV_FILLS)
@@ -428,11 +428,11 @@ def build_tracker(review_dir: Path):
 # ---------- entry ----------
 
 def export_dir(path: Path):
-    if (path / "techdebt.csv").exists():
+    if (path / "problem.csv").exists():
         return build_register(path)
     if (path / "findings.csv").exists():
         return build_tracker(path)
-    raise SystemExit(f"{path}: no techdebt.csv or findings.csv found")
+    raise SystemExit(f"{path}: no problem.csv or findings.csv found")
 
 
 def main():
@@ -445,7 +445,7 @@ def main():
         root = Path(__file__).resolve().parent.parent / "services"
         targets = []
         for svc in sorted(p for p in root.iterdir() if p.is_dir()):
-            if (svc / "techdebt.csv").exists():
+            if (svc / "problem.csv").exists():
                 targets.append(svc)
             targets += sorted(p.parent for p in (svc / "reviews").glob("*/findings.csv"))
     elif args.dir:

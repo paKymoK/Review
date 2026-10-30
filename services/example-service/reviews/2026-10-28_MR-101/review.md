@@ -56,20 +56,20 @@
 
 (Không áp dụng cho MR này.)
 
-## Kiểm tra nợ cũ
+## Kiểm tra vấn đề cũ
 
-| Mã nợ | Vấn đề | Trạng thái trước | Kết quả trong MR này | Trạng thái mới | Bằng chứng |
+| Mã vấn đề | Vấn đề | Trạng thái trước | Kết quả trong MR này | Trạng thái mới | Bằng chứng |
 |---|---|---|---|---|---|
-| TD-example-service-001 | N+1 query khi load danh sách đơn hàng | Open | Còn nguyên | Open | MR-101: `OrderService.java` được chạm, vòng lặp ở dòng 88 vẫn còn |
-| TD-example-service-002 | GET /orders/{id} không kiểm tra chủ sở hữu đơn (IDOR) | Open | Đã sửa | Fixed (verified) | MR-101: `OrderController.java:44` gọi `orderAccessPolicy.assertOwner` |
-| TD-example-service-004 | Gọi API cổng thanh toán bên trong `@Transactional` | Open | Sửa một phần | Partially fixed | MR-101: thêm timeout 3s (`PaymentClient.java:20`) nhưng lời gọi vẫn trong `@Transactional` (`PaymentService.java:57`) |
+| P-example-service-001 | N+1 query khi load danh sách đơn hàng | Open | Còn nguyên | Open | MR-101: `OrderService.java` được chạm, vòng lặp ở dòng 88 vẫn còn |
+| P-example-service-002 | GET /orders/{id} không kiểm tra chủ sở hữu đơn (IDOR) | Open | Đã sửa | Fixed (verified) | MR-101: `OrderController.java:44` gọi `orderAccessPolicy.assertOwner` |
+| P-example-service-004 | Gọi API cổng thanh toán bên trong `@Transactional` | Open | Sửa một phần | Partially fixed | MR-101: thêm timeout 3s (`PaymentClient.java:20`) nhưng lời gọi vẫn trong `@Transactional` (`PaymentService.java:57`) |
 
-## Nợ trong các file MR này chạm vào
+## Vấn đề tồn tại trong các file MR này chạm vào
 
 Gợi ý cho dev, không bắt buộc. Có thể sửa cùng lúc nếu thuận tiện.
 
-- `TD-example-service-001` — N+1 query khi load danh sách đơn hàng — `OrderService.java:88`
-- `TD-example-service-004` — Gọi API cổng thanh toán trong `@Transactional` — `PaymentService.java:57`
+- `P-example-service-001` — N+1 query khi load danh sách đơn hàng — `OrderService.java:88`
+- `P-example-service-004` — Gọi API cổng thanh toán trong `@Transactional` — `PaymentService.java:57`
 
 ## Nợ kỹ thuật mới ghi nhận
 
